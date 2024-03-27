@@ -12,4 +12,6 @@ target_include_directories(Ratworld PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glfw/incl
 
 target_include_directories(Ratworld PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glew/include)
 
+target_link_libraries(Ratworld glfw libglew_static)
+
     
