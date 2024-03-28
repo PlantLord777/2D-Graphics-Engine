@@ -8,7 +8,7 @@ class MAIN
 {
 
 
-    //Function imports from ratgraphics
+  
     
     
 
@@ -41,7 +41,7 @@ class MAIN
 
 class LOOP
 {
-
+    //Function imports from ratgraphics
     public static bool first=true;
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern int rat();
