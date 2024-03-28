@@ -1,34 +1,82 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 
 
-class Class1
+class MAIN
 {
-    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern int rat();
-    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
-    [return: MarshalAs(UnmanagedType.BStr)]
-    public static extern string GetInput();
+
+
+    //Function imports from ratgraphics
+    
+    
+
 
     static void Main(string[] args)
     {
         
         Console.WriteLine("rats");
-        rat();
+        
 
-        while(true)
-        {
-            
-            Console.WriteLine(GetInput());
-        }
+        var autoEvent = new AutoResetEvent(false);
 
+        //makes gameloop run every .1s
+        var stateTimer = new Timer(LOOP.GameLoop, autoEvent, 100, 100);
+        
+            autoEvent.WaitOne();
+        
     }
 
-    public string sayRat()
+
+    
+
+
+        //important function
+        public string sayRat()
 	{
 		return "RATS ARE IN MY WALLS";
 	}
 }
 
+class LOOP
+{
+
+    public static bool first=true;
+    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern int rat();
+    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
+    [return: MarshalAs(UnmanagedType.BStr)]
+    public static extern string GetInput();
+    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ResetInput();
+    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void Buffer();
+
+    public static void GameLoop(Object stateInfo)
+    {
+        if (first)
+        {
+            Console.WriteLine("");
+            first = !first;
+            //initializes the canvas
+            //TODO rename this
+            rat();
+        }
+        
+
+        //Gets keyboard input as a string from rat graphics
+        string s = GetInput();
+
+        if (s != "none")
+        {
+            Console.WriteLine(s);
+            //stops repreated reading of same input
+            ResetInput();
+        }
+
+        //buffers graphics
+        Buffer();
+    }
+}
 

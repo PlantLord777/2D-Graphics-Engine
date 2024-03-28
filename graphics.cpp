@@ -10,8 +10,11 @@
 using std::endl;
 using std::string;
 
-GLFWwindow* w ;
+static GLFWwindow* w ;
 string lastkey="rat";
+
+static bool init=false;
+
 //this is neccessary for export as dll
 extern "C" {
 
@@ -74,27 +77,45 @@ extern "C" {
             glfwSwapBuffers(window);
         }*/
 
-        
+        init = true;
         return 1;
     }
 
     
-
+    //if theres a memory leak its probably caused here
     __declspec(dllexport) BSTR  GetInput()
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glfwSwapBuffers(w);
-        
-        glfwPollEvents();
-        
+        if (init) {
+            glfwPollEvents();
+        }
 
         //yes this is required
         char* char_ = new char[lastkey.length() +1];
-
         strcpy(char_, lastkey.c_str());
-        std::cout << "c++ output " << char_ << std::endl;
 
-        return SysAllocString(CA2W(char_));
+       
+        //std::cout << "c++ output " << char_ << std::endl;
+        
+        
+        BSTR b = SysAllocString(CA2W(char_));
+        delete[] char_;
+        return b;
+    }
+
+    __declspec(dllexport) void  Buffer()
+    {
+        if (init) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glfwSwapBuffers(w);
+        }
+        
+    }
+
+
+    __declspec(dllexport) void  ResetInput()
+    {
+        lastkey = "none";
+        
     }
 }
 
