@@ -53,7 +53,7 @@ class LOOP
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern void Buffer();
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void drawSquare(double x1, double y1, double sidelength);
+    public static extern void drawSquare(float x, float y);
 
     public static void GameLoop(Object stateInfo)
     {
@@ -70,10 +70,14 @@ class LOOP
         //Gets keyboard input as a string from rat graphics
         string s = GetInput();
         s= s.Trim();
-        if (s == "A")
+        string[] ss = s.Split(' ');
+        if (s.Split(' ')[0]=="65")
         {
             Console.WriteLine("AAAAAA");
-            drawSquare(500, 500, 500);
+            drawSquare(0, 0);
+            drawSquare(.5f, .5f);
+            drawSquare(.7f, .7f);
+            //drawSquare(5, 5);
         }
         if (s != "none")
         {

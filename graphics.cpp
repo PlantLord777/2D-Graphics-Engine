@@ -1,22 +1,81 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include < stdio.h > 
 #include <string.h>
 #include <windows.h>
 #include <atlbase.h>
 #include <atlconv.h>
+#include <fstream>
 #include <sstream>
 using std::endl;
 using std::string;
 
 static GLFWwindow* w ;
-string lastkey="rat";
+string lastkey="none";
+GLuint shaderProgram;
 
 static bool init=false;
 
+
+
+
+
 //this is neccessary for export as dll
 extern "C" {
+
+    //cant return strings directly due to exporting as dll so i set string by reference
+    __declspec(dllexport) void readFile(string fileloc, string& out) {
+        std::ifstream file(fileloc);
+        std::stringstream content;
+        if (!file.fail())
+        {
+            content << file.rdbuf();
+        }
+        std::cout << "conetent " << content.str() << std::endl;
+
+        out = content.str();
+        
+
+    }
+
+    __declspec(dllexport) GLuint CreateShader(string fileloc, GLuint shadertype)
+    {
+        GLuint shader = glCreateShader(shadertype);
+        std::cout << "here2" << std::endl;
+        string filecontent;
+        readFile(fileloc, filecontent);
+        const char* shaderSource = filecontent.c_str();
+        
+        glShaderSource(shader, 1, &shaderSource, nullptr);
+        glCompileShader(shader);
+        int success=1;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            char infoLog[512];
+            glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+            std::cout << "Shader error " << infoLog << std::endl;
+        }
+
+        return shader;
+    }
+
+    __declspec(dllexport) GLuint CreateProgram()
+    {
+        GLuint vertexShader = CreateShader("../../../../shaders/vertshader.rat", GL_VERTEX_SHADER);
+        GLuint fragmentShader = CreateShader("../../../../shaders/fragshader.rat", GL_FRAGMENT_SHADER);
+
+        GLuint program = glCreateProgram();
+        glAttachShader(program, vertexShader);
+        glAttachShader(program, fragmentShader);
+
+        glLinkProgram(program);
+
+        return program;
+    }
+
 
 
     __declspec(dllexport) void HandleKeyInput(GLFWwindow* w, int key, int status, int action, int mods) {
@@ -31,7 +90,10 @@ extern "C" {
 
     }
 
-  
+    __declspec(dllexport) void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+    {
+        glViewport(0, 0, width, height);
+    }
 
     __declspec(dllexport) int rat()
     {
@@ -40,8 +102,9 @@ extern "C" {
             std::cout << "glfw failed" << endl;
             return -1;
         }
-
-
+        
+        
+        
 
         //set options
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -50,7 +113,7 @@ extern "C" {
 
         //initialize window
         
-        w =  glfwCreateWindow(1280, 720, "Ratworld", NULL, NULL);
+        w =  glfwCreateWindow(1920, 1080, "Ratworld", NULL, NULL);
         if (!w)
         {
             std::cout << "fail" << std::endl;
@@ -58,24 +121,35 @@ extern "C" {
             return(-1);
         }
 
+
+
         glfwMakeContextCurrent(w);
 
-        glewExperimental = GL_TRUE;
+        //initialize glew
+        if (glewInit() != GLEW_OK) {
+            std::cout << "glew failed" << endl;
+            return -1;
+        }
 
+        glViewport(0, 0, 1920, 1080);
+        glfwSetFramebufferSizeCallback(w, framebuffer_size_callback);
+
+
+       
+        glewExperimental = GLEW_OK;
 
         //set background color
         glClearColor(.3f, .3f, .3f, 1.0f);
 
         glfwSetKeyCallback(w, HandleKeyInput);
-        //loop till window close
-        /*while (!glfwWindowShouldClose(window))
-        {
-            //accept inputs
-            glfwPollEvents();
-            //clears buffer
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glfwSwapBuffers(window);
-        }*/
+        
+
+        
+
+
+        shaderProgram = CreateProgram();
+        //no clue what this means but its required
+        
 
         init = true;
 
@@ -111,26 +185,55 @@ extern "C" {
     __declspec(dllexport) void  Buffer()
     {
         if (init) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwSwapBuffers(w);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            
+            int width, height;
+            glfwGetFramebufferSize(w, &width, &height);
+            glViewport(0, 0, width, height);
         }
         
     }
 
-    __declspec(dllexport) void drawSquare(double x1, double y1, double sidelength)
+    __declspec(dllexport) void drawSquare(float x, float y)
     {
         
-        glClear(GL_COLOR_BUFFER_BIT);
-        glColor3f(0.0, 1.0, 0.0);
-        glBegin(GL_POLYGON);
-        glVertex3f(2.0, 4.0, 0.0);
-        glVertex3f(8.0, 4.0, 0.0);
-        glVertex3f(8.0, 6.0, 0.0);
-        glVertex3f(2.0, 6.0, 0.0);
-        glEnd();
-        glFlush();
+        float vertices[] = {
+            x+.05f,  y+.1f, 0.0f,  // top right
+            0.05f+x, y, 0.0f,  // bottom right
+            x, y, 0.0f,  // bottom left
+            x,  0.1f+y, 0.0f   // top left 
+        };
+        unsigned int indices[] = { 
+            0, 1, 3,   // first triangle
+            1, 2, 3    // second triangle
+        };
 
-        //glew
+        GLuint VBO, VAO, EBO;
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),vertices,GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+        glBindVertexArray(0);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        //glDeleteVertexArrays(1, &VAO);
+        ///glDeleteBuffers(1, &VBO);
+
+
         std::cout << "square" << std::endl;
     }
 
@@ -140,5 +243,8 @@ extern "C" {
         lastkey = "none";
         
     }
+
+    
+
 }
 
