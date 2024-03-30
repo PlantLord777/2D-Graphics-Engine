@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <atlbase.h>
 #include <atlconv.h>
-
+#include <sstream>
 using std::endl;
 using std::string;
 
@@ -21,14 +21,12 @@ extern "C" {
 
     __declspec(dllexport) void HandleKeyInput(GLFWwindow* w, int key, int status, int action, int mods) {
         string k = "";
-        k += key;
-        k += " ";
-        k += status;
-        k += " ";
-        k += action;
-        k += " ";
-        k += mods; 
-        lastkey = key;
+
+
+        std::ostringstream oss;
+        oss << key << " " << status << " " << action << " " << mods;
+        
+        lastkey = oss.str();
         
 
     }
@@ -42,6 +40,8 @@ extern "C" {
             std::cout << "glfw failed" << endl;
             return -1;
         }
+
+
 
         //set options
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
