@@ -234,11 +234,11 @@ extern "C" {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        //glDeleteVertexArrays(1, &VAO);
-        ///glDeleteBuffers(1, &VBO);
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteProgram(shaderProgram);
 
-
-        std::cout << "square" << std::endl;
+        //std::cout << "square" << std::endl;
     }
 
 
