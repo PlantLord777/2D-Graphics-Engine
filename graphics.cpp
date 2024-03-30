@@ -28,7 +28,7 @@ extern "C" {
         k += action;
         k += " ";
         k += mods; 
-        lastkey = k;
+        lastkey = key;
         
 
     }
@@ -78,6 +78,12 @@ extern "C" {
         }*/
 
         init = true;
+
+        
+
+        
+
+
         return 1;
     }
 
@@ -109,6 +115,23 @@ extern "C" {
             glfwSwapBuffers(w);
         }
         
+    }
+
+    __declspec(dllexport) void drawSquare(double x1, double y1, double sidelength)
+    {
+        
+        glClear(GL_COLOR_BUFFER_BIT);
+        glColor3f(0.0, 1.0, 0.0);
+        glBegin(GL_POLYGON);
+        glVertex3f(2.0, 4.0, 0.0);
+        glVertex3f(8.0, 4.0, 0.0);
+        glVertex3f(8.0, 6.0, 0.0);
+        glVertex3f(2.0, 6.0, 0.0);
+        glEnd();
+        glFlush();
+
+        //glew
+        std::cout << "square" << std::endl;
     }
 
 

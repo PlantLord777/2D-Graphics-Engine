@@ -24,7 +24,7 @@ class MAIN
         //makes gameloop run every .1s
         var stateTimer = new Timer(LOOP.GameLoop, autoEvent, 100, 100);
         
-            autoEvent.WaitOne();
+        autoEvent.WaitOne();
         
     }
 
@@ -52,6 +52,8 @@ class LOOP
     public static extern void ResetInput();
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern void Buffer();
+    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void drawSquare(double x1, double y1, double sidelength);
 
     public static void GameLoop(Object stateInfo)
     {
@@ -67,13 +69,19 @@ class LOOP
 
         //Gets keyboard input as a string from rat graphics
         string s = GetInput();
-
+        s= s.Trim();
+        if (s == "A")
+        {
+            Console.WriteLine("AAAAAA");
+            drawSquare(500, 500, 500);
+        }
         if (s != "none")
         {
             Console.WriteLine(s);
             //stops repreated reading of same input
             ResetInput();
         }
+        
 
         //buffers graphics
         Buffer();
