@@ -196,7 +196,7 @@ extern "C" {
         
     }
 
-    __declspec(dllexport) void drawSquare(float x, float y)
+    __declspec(dllexport) void drawSquare(float x, float y, float r, float g, float b)
     {
         
         float vertices[] = {
@@ -225,7 +225,11 @@ extern "C" {
         glBindBuffer(GL_ARRAY_BUFFER,0);
         glBindVertexArray(0);
 
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+
+        
         glUseProgram(shaderProgram);
+        glUniform4f(vertexColorLocation, r, g, b, 1.0f);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
