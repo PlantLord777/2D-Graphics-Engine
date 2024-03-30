@@ -53,7 +53,7 @@ class LOOP
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern void Buffer();
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void drawSquare(float x, float y, float r, float g, float b);
+    public static extern void drawSquare(float x, float y, float sidelength, float r, float g, float b);
 
     public static void GameLoop(Object stateInfo)
     {
@@ -74,9 +74,10 @@ class LOOP
         if (s.Split(' ')[0]=="65")
         {
             Console.WriteLine("AAAAAA");
-            drawSquare(0, 0,1,0,0);
-            drawSquare(.5f, .5f,0,1,0);
-            drawSquare(.7f, .7f,0,0,1);
+            drawSquare( 0 , 0 ,.1f , 1,0,0);
+            drawSquare(.5f,.5f,.1f , 0,1,0);
+            drawSquare(.6f, .6f, .1f, 0, 1, 1);
+            drawSquare(.7f,.7f,.1f , 0,0,1);
             //drawSquare(5, 5);
         }
         if (s != "none")

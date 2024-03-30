@@ -196,14 +196,14 @@ extern "C" {
         
     }
 
-    __declspec(dllexport) void drawSquare(float x, float y, float r, float g, float b)
+    __declspec(dllexport) void drawSquare(float x, float y,float sidelength, float r, float g, float b)
     {
         
         float vertices[] = {
-            x+.05f,  y+.1f, 0.0f,  // top right
-            0.05f+x, y, 0.0f,  // bottom right
+            x+ sidelength,  y+ sidelength, 0.0f,  // top right
+            sidelength +x, y, 0.0f,  // bottom right
             x, y, 0.0f,  // bottom left
-            x,  0.1f+y, 0.0f   // top left 
+            x,  sidelength+y, 0.0f   // top left 
         };
         unsigned int indices[] = { 
             0, 1, 3,   // first triangle
