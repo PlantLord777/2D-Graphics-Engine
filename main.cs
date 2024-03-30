@@ -81,6 +81,8 @@ class LOOP
             if (currentposx >0) {
                 map[currentposx, currentposy] = 0;
                 currentposx -= 1;
+                if (map[currentposx, currentposy] == 2)
+                    eatApple();
                 map[currentposx, currentposy] = 1;
             }
         }
@@ -90,6 +92,30 @@ class LOOP
             {
                 map[currentposx, currentposy] = 0;
                 currentposx += 1;
+                if (map[currentposx, currentposy] == 2)
+                    eatApple();
+                map[currentposx, currentposy] = 1;
+            }
+        }
+        if (s.Split(' ')[0] == "83" && (s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
+        {
+            if (currentposy >0)
+            {
+                map[currentposx, currentposy] = 0;
+                currentposy -= 1;
+                if (map[currentposx, currentposy] == 2)
+                    eatApple();
+                map[currentposx, currentposy] = 1;
+            }
+        }
+        if (s.Split(' ')[0] == "87" && (s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
+        {
+            if (currentposy < 24)
+            {
+                map[currentposx, currentposy] = 0;
+                currentposy += 1;
+                if (map[currentposx, currentposy] == 2)
+                    eatApple();
                 map[currentposx, currentposy] = 1;
             }
         }
@@ -97,7 +123,7 @@ class LOOP
         {
             Console.WriteLine(s);
             //stops repreated reading of same input
-            ResetInput();
+            //ResetInput();
         }
 
         for (int r = 0; r < 24; r++)
@@ -133,6 +159,21 @@ class LOOP
         {
             map[r, 0] = 3;
         }
+        createApple();
+    }
+
+    public static void createApple()
+    {
+        var rand = new Random();
+        int r = rand.Next(11)+1;
+        int c = rand.Next(11)+1;
+        map[r,c] = 2;
+    }
+
+    public static void eatApple()
+    {
+        Console.WriteLine("Apple");
+        createApple();
     }
 }
 
