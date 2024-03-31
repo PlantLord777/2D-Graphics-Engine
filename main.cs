@@ -22,7 +22,7 @@ class MAIN
         var autoEvent = new AutoResetEvent(false);
 
         //makes gameloop run every .1s
-        var stateTimer = new Timer(LOOP.GameLoop, autoEvent, 100, 100);
+        var stateTimer = new Timer(LOOP.GameLoop, autoEvent, 50, 50);
         
         autoEvent.WaitOne();
         
@@ -132,11 +132,11 @@ class LOOP
             for (int c = 0; c < 24; c++)
             {
                 if (map[r,c] == 1)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,.5f,0f, 1.0f, 0f);
+                    drawSquare((r-10) * .1f, (c-10) * .1f,.1f,0f, 1.0f, 0f);
                 if (map[r,c]==2)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,.5f, 1f, 0f, 0f);
+                    drawSquare((r-10) * .1f, (c-10) * .1f,.1f, 1f, 0f, 0f);
                 if (map[r, c] == 3)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,.5f, 0f, 0f, 0f);
+                    drawSquare((r-10) * .1f, (c-10) * .1f,.1f, 0f, 0f, 0f);
             }
         }
         //buffers graphics
