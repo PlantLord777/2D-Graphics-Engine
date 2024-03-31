@@ -72,6 +72,8 @@ extern "C" {
         glAttachShader(program, fragmentShader);
 
         glLinkProgram(program);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
 
         return program;
     }
@@ -234,8 +236,11 @@ extern "C" {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        //glDeleteVertexArrays(1, &VAO);
-        ///glDeleteBuffers(1, &VBO);
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &EBO);
+       
+
 
 
         std::cout << "square" << std::endl;
