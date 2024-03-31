@@ -53,7 +53,7 @@ class LOOP
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern void Buffer();
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void drawSquare(float x, float y, float r, float g, float b);
+    public static extern void drawSquare(float x, float y, float sidelength, float r, float g, float b);
 
     static int[,] map = new int[24,24];
     static int currentposx = 2;
@@ -118,6 +118,7 @@ class LOOP
                     eatApple();
                 map[currentposx, currentposy] = 1;
             }
+
         }
         if (s != "none")
         {
@@ -131,11 +132,11 @@ class LOOP
             for (int c = 0; c < 24; c++)
             {
                 if (map[r,c] == 1)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,0f, 1.0f, 0f);
+                    drawSquare((r-10) * .1f, (c-10) * .1f,.5f,0f, 1.0f, 0f);
                 if (map[r,c]==2)
-                    drawSquare((r-10) * .1f, (c-10) * .1f, 1f, 0f, 0f);
+                    drawSquare((r-10) * .1f, (c-10) * .1f,.5f, 1f, 0f, 0f);
                 if (map[r, c] == 3)
-                    drawSquare((r-10) * .1f, (c-10) * .1f, 0f, 0f, 0f);
+                    drawSquare((r-10) * .1f, (c-10) * .1f,.5f, 0f, 0f, 0f);
             }
         }
         //buffers graphics
