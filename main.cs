@@ -61,7 +61,8 @@ class LOOP
     static int currentposx = 2;
     static int currentposy = 4;
     static Queue<string> snakepos = new Queue<string>();
-    static int snakelength = 1;
+    static int snakelength = 2;
+    static bool dead = false;
 
     public static void GameLoop(Object stateInfo)
     {
@@ -134,7 +135,7 @@ class LOOP
         }
 
         //draw the map based on held value
-        //1 = green(snake) 2 = red (apple) 3 = black(wall)
+        //1 = green(snake) 2 = red (apple) 3 = black(wall) 4 = dark green(head of snake)
         for (int x = 0; x < 20; x++)
         {
             for (int y = 0; y < 20; y++)
@@ -145,6 +146,8 @@ class LOOP
                     drawSquare((x-10) * .1f, (y-10) * .1f,.1f, 1f, 0f, 0f);
                 if (map[x, y] == 3)
                     drawSquare((x-10) * .1f, (y-10) * .1f,.1f, 0f, 0f, 0f);
+                if (map[x, y] == 4)
+                    drawSquare((x - 10) * .1f, (y - 10) * .1f, .1f, 0f, .5f, 0f);
             }
         }
         //buffers graphics
@@ -196,9 +199,17 @@ class LOOP
 
     public static void MoveSnake(int x, int y)
     {
+        if (dead)
+            return;
+
         //create new apple if on smae tile as apple
         if (map[x, y] == 2)
             eatApple();
+
+        if (map[x, y] == 1 || map[x,y]==3)
+        {
+            Die();
+        }
 
         //clear array of snake
         foreach (string s in snakepos)
@@ -221,6 +232,7 @@ class LOOP
             map[Int32.Parse(s.Split(' ')[0]), Int32.Parse(s.Split(' ')[1])] = 1;
         
         }
+        map[x, y] = 4;
     }
 
     public static void eatApple()
@@ -228,6 +240,11 @@ class LOOP
         Console.WriteLine("Apple");
         snakelength++;
         createApple();
+    }
+
+    public static void Die()
+    {
+        dead = true;
     }
 }
 
