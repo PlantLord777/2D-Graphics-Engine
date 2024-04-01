@@ -140,11 +140,11 @@ class LOOP
             for (int y = 0; y < 20; y++)
             {
                 if (map[x,y] == 1)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,.1f,0f, 1.0f, 0f);
+                    drawSquare((x-10) * .1f, (y-10) * .1f,.1f,0f, 1.0f, 0f);
                 if (map[x,y]==2)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,.1f, 1f, 0f, 0f);
+                    drawSquare((x-10) * .1f, (y-10) * .1f,.1f, 1f, 0f, 0f);
                 if (map[x, y] == 3)
-                    drawSquare((r-10) * .1f, (c-10) * .1f,.1f, 0f, 0f, 0f);
+                    drawSquare((x-10) * .1f, (y-10) * .1f,.1f, 0f, 0f, 0f);
             }
         }
         //buffers graphics
