@@ -57,7 +57,7 @@ class LOOP
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern void drawSquare(float x, float y, float sidelength, float r, float g, float b);
 
-    static int[,] map = new int[24,24];
+    static int[,] map = new int[20,20];
     static int currentposx = 2;
     static int currentposy = 4;
     static Queue<string> snakepos = new Queue<string>();
@@ -82,44 +82,40 @@ class LOOP
         string[] ss = s.Split(' ');
         if (s.Split(' ')[0]=="65"&&( s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
-            if (currentposx >0) {
+            if (currentposx >1) {
                 
                 currentposx -= 1;
-                if (map[currentposx, currentposy] == 2)
-                    eatApple();
+                
                 MoveSnake(currentposx, currentposy);
             }
         }
         if (s.Split(' ')[0] == "68" &&( s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
-            if (currentposx < 24)
+            if (currentposx < 18)
             {
                 
                 currentposx += 1;
-                if (map[currentposx, currentposy] == 2)
-                    eatApple();
+                
                 MoveSnake(currentposx, currentposy);
             }
         }
         if (s.Split(' ')[0] == "83" && (s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
-            if (currentposy >0)
+            if (currentposy >1)
             {
                 
                 currentposy -= 1;
-                if (map[currentposx, currentposy] == 2)
-                    eatApple();
+                
                 MoveSnake(currentposx, currentposy);
             }
         }
         if (s.Split(' ')[0] == "87" && (s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
-            if (currentposy < 24)
+            if (currentposy < 18)
             {
                 
                 currentposy += 1;
-                if (map[currentposx, currentposy] == 2)
-                    eatApple();
+                
                 MoveSnake(currentposx, currentposy);
             }
 
@@ -131,9 +127,9 @@ class LOOP
             //ResetInput();
         }
 
-        for (int r = 0; r < 24; r++)
+        for (int r = 0; r < 20; r++)
         {
-            for (int c = 0; c < 24; c++)
+            for (int c = 0; c < 20; c++)
             {
                 if (map[r,c] == 1)
                     drawSquare((r-10) * .1f, (c-10) * .1f,.1f,0f, 1.0f, 0f);
@@ -150,9 +146,9 @@ class LOOP
     public static void createMap()
     {
         
-        for(int r=0;r<24;r++)
+        for(int r=0;r<20;r++)
         {
-            for(int c =0; c< 24; c++)
+            for(int c =0; c< 20; c++)
             {
                 map[r,c] = 0;
             }
@@ -161,11 +157,16 @@ class LOOP
 
         MoveSnake(2, 4);
 
-        for (int r = 0; r < 24; r++)
+        for (int r = 0; r < 20; r++)
         {
             map[r, 0] = 3;
+            map[r, 19] = 3;
         }
-        createApple();
+        for(int c =0; c<20;c++)
+        {
+            map[0, c] = 3;
+            map[19, c] = 3;
+        }        createApple();
     }
 
     public static void createApple()
@@ -173,12 +174,20 @@ class LOOP
         var rand = new Random();
         int r = rand.Next(11)+1;
         int c = rand.Next(11)+1;
+        while (map[r, c] != 0)
+        {
+             r = rand.Next(17) + 1;
+             c = rand.Next(17) + 1;
+        }
         map[r,c] = 2;
         snakelength++;
     }
 
     public static void MoveSnake(int x, int y)
     {
+        if (map[x, y] == 2)
+            eatApple();
+
         foreach (string s in snakepos)
         {
 
