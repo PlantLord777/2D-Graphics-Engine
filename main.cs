@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -58,6 +60,8 @@ class LOOP
     static int[,] map = new int[24,24];
     static int currentposx = 2;
     static int currentposy = 4;
+    static Queue<string> snakepos = new Queue<string>();
+    static int snakelength = 1;
 
     public static void GameLoop(Object stateInfo)
     {
@@ -79,44 +83,44 @@ class LOOP
         if (s.Split(' ')[0]=="65"&&( s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
             if (currentposx >0) {
-                map[currentposx, currentposy] = 0;
+                
                 currentposx -= 1;
                 if (map[currentposx, currentposy] == 2)
                     eatApple();
-                map[currentposx, currentposy] = 1;
+                MoveSnake(currentposx, currentposy);
             }
         }
         if (s.Split(' ')[0] == "68" &&( s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
             if (currentposx < 24)
             {
-                map[currentposx, currentposy] = 0;
+                
                 currentposx += 1;
                 if (map[currentposx, currentposy] == 2)
                     eatApple();
-                map[currentposx, currentposy] = 1;
+                MoveSnake(currentposx, currentposy);
             }
         }
         if (s.Split(' ')[0] == "83" && (s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
             if (currentposy >0)
             {
-                map[currentposx, currentposy] = 0;
+                
                 currentposy -= 1;
                 if (map[currentposx, currentposy] == 2)
                     eatApple();
-                map[currentposx, currentposy] = 1;
+                MoveSnake(currentposx, currentposy);
             }
         }
         if (s.Split(' ')[0] == "87" && (s.Split(' ')[2] == "0" || s.Split(' ')[2] == "1"))
         {
             if (currentposy < 24)
             {
-                map[currentposx, currentposy] = 0;
+                
                 currentposy += 1;
                 if (map[currentposx, currentposy] == 2)
                     eatApple();
-                map[currentposx, currentposy] = 1;
+                MoveSnake(currentposx, currentposy);
             }
 
         }
@@ -154,7 +158,8 @@ class LOOP
             }
         }
 
-        map[2,4] = 1;
+
+        MoveSnake(2, 4);
 
         for (int r = 0; r < 24; r++)
         {
@@ -169,6 +174,28 @@ class LOOP
         int r = rand.Next(11)+1;
         int c = rand.Next(11)+1;
         map[r,c] = 2;
+        snakelength++;
+    }
+
+    public static void MoveSnake(int x, int y)
+    {
+        foreach (string s in snakepos)
+        {
+
+            map[Int32.Parse(s.Split(' ')[0]), Int32.Parse(s.Split(' ')[1])] = 0;
+
+        }
+        snakepos.Enqueue(x + " " + y);
+        while(snakepos.Count > snakelength)
+        {
+            snakepos.Dequeue();
+        }
+        foreach(string s in snakepos)
+        {
+
+            map[Int32.Parse(s.Split(' ')[0]), Int32.Parse(s.Split(' ')[1])] = 1;
+        
+        }
     }
 
     public static void eatApple()
