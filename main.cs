@@ -158,7 +158,7 @@ class LOOP
         {
             for(int y =0; y< 20; y++)
             {
-                map[r,c] = 0;
+                map[x,y] = 0;
             }
         }
 
@@ -185,7 +185,7 @@ class LOOP
         int x = rand.Next(11)+1;
         int y = rand.Next(11)+1;
         //loop until empty space found
-        while (map[r, c] != 0)
+        while (map[x, y] != 0)
         {
              x = rand.Next(17) + 1;
              y = rand.Next(17) + 1;
