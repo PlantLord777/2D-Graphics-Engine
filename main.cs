@@ -33,17 +33,17 @@ class MAIN
 
 
         //important function
-        public string sayRat()
+        public string say()
 	{
-		return "RATS ARE IN MY WALLS";
+		return "Say";
 	}
 }
 
 class LOOP
 {
-    //Function imports from ratgraphics
+    //Function imports from graphics
     public static bool first=true;
-    [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport("graphics.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern int rat();
     [DllImport("ratgraphics.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.BStr)]
