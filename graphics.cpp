@@ -150,7 +150,7 @@ extern "C" {
 
 
         shaderProgram = CreateProgram();
-        //no clue what this means but its required
+        
         
 
         init = true;
